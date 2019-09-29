@@ -1,6 +1,6 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+namespace Yjtec\LinSsh2;
 
 /**
  * SSH2 driver class.
@@ -36,52 +36,38 @@
  * @link      http://www.php.net/manual/en/book.ssh2.php
  * @link	  http://www.dali.net.nz/Telnet.class.php.txt
  */
-class ssh2
-{
+class Ssh2 {
+
     // Remote Host
     private $_host;
-
     // Remote Port
     private $_port;
-
     // Used for handling lag
     private $_timeout;
-
     // Holds our connection object
     private $_connection = null;
-
     // Holds our sftp object
     private $_sftp = null;
-
     // Manages the buffer for us
     private $_buffer = null;
-
     // Maintains a complete history of the shell
     private $_history = '';
-
     // Holds the shell stream
     private $_shell = null;
-
     // Allows us to define a prompt to look for
     private $_prompt = '>';
-
     // We use the dumb terminal to avoid excessive escape characters
     // in windows SSH sessions.
     private $_term_type = 'dumb';
-
     // may be passed as an associative array of name/value
     // pairs to set in the target environment.
     private $_env = null;
-
     // Width of the virtual terminal.
     private $_width = 80;
-
     // Height of the virtual terminal.
     private $_height = 40;
-
     // should be one of SSH2_TERM_UNIT_CHARS or SSH2_TERM_UNIT_PIXELS.
     private $_width_height_type = SSH2_TERM_UNIT_CHARS;
-
     private $_debug = true;
     private $_debugLog = '/var/log/sshdebug.log';
 
@@ -99,7 +85,6 @@ class ssh2
 
     // Error
     const SSH_ERROR = false;
-
     // No error
     const SSH_OK = true;
 
@@ -113,8 +98,7 @@ class ssh2
      *
      * @return void
      */
-    public function __construct($host = false, $port = '22', $timeout = 10)
-    {
+    public function __construct($host = false, $port = '22', $timeout = 10) {
         if (!function_exists('ssh2_connect')) {
             throw new Exception("FATAL: ssh2_connect function doesn't exist!");
         }
@@ -142,8 +126,7 @@ class ssh2
      *
      * @return void
      */
-    public function __destruct()
-    {
+    public function __destruct() {
         // cleanup resources
         $this->disconnect();
         $this->_buffer = null;
@@ -159,8 +142,7 @@ class ssh2
      *
      * @return bool
      */
-    public function connect($host = null, $port = null, $methods = null, $callbacks = null)
-    {
+    public function connect($host = null, $port = null, $methods = null, $callbacks = null) {
         // Set the Host if we got a new one.
         if ($host != null) {
             $this->_host = $host;
@@ -200,8 +182,7 @@ class ssh2
         return self::SSH_OK;
     }
 
-    public function isConnected()
-    {
+    public function isConnected() {
         return (bool) $this->_connection;
     }
 
@@ -214,8 +195,7 @@ class ssh2
      *
      * @return void
      */
-    public static function disconnect_cb($reason, $message, $language)
-    {
+    public static function disconnect_cb($reason, $message, $language) {
         printf("SSH disconnected with reason code [%d] and message: %s\n", $reason, $message);
     }
 
@@ -224,8 +204,7 @@ class ssh2
      *
      * @return bool
      */
-    public function disconnect()
-    {
+    public function disconnect() {
         $this->_connection = null;
 
         return self::SSH_OK;
@@ -241,8 +220,7 @@ class ssh2
      *
      * @return bool
      */
-    public function authPassword($username = '', $password = '')
-    {
+    public function authPassword($username = '', $password = '') {
         if ($username != '') {
             $this->_user = $username;
         }
@@ -264,8 +242,7 @@ class ssh2
      *
      * @return bool
      */
-    public function setPrompt($s = '>')
-    {
+    public function setPrompt($s = '>') {
         $this->_prompt = $s;
 
         return self::SSH_OK;
@@ -276,8 +253,7 @@ class ssh2
      *
      * @return void
      */
-    private function clearBuffer()
-    {
+    private function clearBuffer() {
         $this->_buffer = '';
     }
 
@@ -294,8 +270,7 @@ class ssh2
      *
      * @return bool
      */
-    public function openShell($termType = null, $env = null, $width = null, $height = null, $whType = null)
-    {
+    public function openShell($termType = null, $env = null, $width = null, $height = null, $whType = null) {
         // Set a new term type?
         if ($termType != null) {
             $this->_term_type = $termType;
@@ -326,11 +301,11 @@ class ssh2
 
         // Create a SSH Shell
         if (!($this->_shell = ssh2_shell($this->_connection,
-                                          $this->_term_type,
-                                          $this->_env,
-                                          $this->_width,
-                                          $this->_height,
-                                          $this->_width_height_type))) {
+                $this->_term_type,
+                $this->_env,
+                $this->_width,
+                $this->_height,
+                $this->_width_height_type))) {
             throw new Exception('FATAL: unable to establish shell');
         } else {
             stream_set_blocking($this->_shell, true);
@@ -357,8 +332,7 @@ class ssh2
      *
      * @return bool
      */
-    private function readTo($prompt = null)
-    {
+    private function readTo($prompt = null) {
         // What Prompt do we read to?
         if ($prompt != null) {
             $thisPrompt = $prompt;
@@ -380,7 +354,7 @@ class ssh2
 
             // if there isn't one, we have an issue
             if ($c === false) {
-                throw new Exception("Couldn't find the requested : '".$thisPrompt."', it was not in the data returned from server : '".$this->_buffer."'");
+                throw new Exception("Couldn't find the requested : '" . $thisPrompt . "', it was not in the data returned from server : '" . $this->_buffer . "'");
             }
 
             // Interpreted As Command?
@@ -406,11 +380,11 @@ class ssh2
     }
 
     /*
-    * Get the full History of the shell session.
-    *
-    */
-    public function getHistory()
-    {
+     * Get the full History of the shell session.
+     *
+     */
+
+    public function getHistory() {
         return $this->_history;
     }
 
@@ -421,19 +395,18 @@ class ssh2
      *
      * @return bool
      */
-    private function negotiateTelnetOptions()
-    {
+    private function negotiateTelnetOptions() {
         $c = fgetc();
 
         if ($c != $this->_IAC) {
             if (($c == $this->_DO) || ($c == $this->_DONT)) {
                 $opt = fgetc();
-                fwrite($this->socket, $this->_IAC.$this->_WONT.$opt);
+                fwrite($this->socket, $this->_IAC . $this->_WONT . $opt);
             } elseif (($c == $this->_WILL) || ($c == $this->_WONT)) {
                 $opt = fgetc();
-                fwrite($this->socket, $this->_IAC.$this->_DONT.$opt);
+                fwrite($this->socket, $this->_IAC . $this->_DONT . $opt);
             } else {
-                throw new Exception('Error: unknown control character '.ord($c));
+                throw new Exception('Error: unknown control character ' . ord($c));
             }
         } else {
             throw new Exception('Error: Something Wicked Happened');
@@ -452,8 +425,7 @@ class ssh2
      *
      * @return bool
      */
-    public function write($buffer, $addNewLine = true)
-    {
+    public function write($buffer, $addNewLine = true) {
 
         // If we don't have a shell, throw an exception
         if (!$this->_shell) {
@@ -486,8 +458,7 @@ class ssh2
      *
      * @return string Error Message | Command Results
      */
-    public function exec($cmd)
-    {
+    public function exec($cmd) {
         try {
             echo "{trying $cmd}}\n";
             $this->write($cmd);
@@ -510,20 +481,17 @@ class ssh2
      *
      * @return string Content of the command buffer
      */
-    public function getBuffer()
-    {
+    public function getBuffer() {
         $this->readTo($this->_prompt);
 
         return $this->_buffer;
     }
 
-    public function uploadFile($localFile, $remoteFile)
-    {
+    public function uploadFile($localFile, $remoteFile) {
         return ssh2_scp_send($this->_connection, $localFile, $remoteFile);
     }
 
-    public function deleteFile($remoteFile)
-    {
+    public function deleteFile($remoteFile) {
         if (!$this->_sftp) {
             $this->_sftp = @ssh2_sftp($this->_connection);
             if (!$this->_sftp) {
@@ -533,4 +501,5 @@ class ssh2
 
         return ssh2_sftp_unlink($this->_sftp, $remoteFile);
     }
+
 }
