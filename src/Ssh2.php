@@ -1,6 +1,6 @@
 <?php
 
-namespace Yjtec\LinSsh2;
+namespace Yjtec\Linssh2;
 
 /**
  * SSH2 driver class.

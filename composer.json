@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Yjtec\\LinSsh2\\": "src/"
+            "Yjtec\\Linssh2\\": "src/"
         }
     }
 }
