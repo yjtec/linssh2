@@ -1,7 +1,7 @@
 {
     "name": "yjtec/linssh2",
-    "description": "fork前辈的代码，第一版保留前辈标识",
-    "keywords": ["Controller", "linphe"],
+    "description": "php ssh2",
+    "keywords": ["ssh2", "linphe"],
     "type": "library",
     "license": "MIT",
     "authors": [
